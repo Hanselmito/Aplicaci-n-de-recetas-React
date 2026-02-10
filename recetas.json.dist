@@ -1,0 +1,78 @@
+{
+    "recetas": [
+        {
+            "id": 1,
+            "nombre": "Tortilla de Patatas",
+            "ingredientes": [
+                "2-4 patatas medianas",
+                "1 cebolla grande (opcional)",
+                "2-6 huevos",
+                "Sal al gusto",
+                "Aceite de oliva"
+            ],
+            "pasos": [
+                "Pelar y cortar las patatas en rodajas finas. Si usas cebolla, pélala y córtala en juliana.",
+                "Calienta abundante aceite de oliva en una sartén grande a fuego medio-alto. Añade las patatas (y la cebolla si la usas) y fríelas hasta que estén tiernas pero no doradas. Sazona con sal.",
+                "Mientras se fríen las patatas, bate los huevos en un bol grande y sazona con un poco de sal.",
+                "Cuando las patatas estén listas, escúrrelas para eliminar el exceso de aceite y añádelas al bol con los huevos batidos. Mezcla bien para que las patatas queden bien impregnadas con el huevo.",
+                "Calienta un poco del aceite usado en una sartén más pequeña a fuego medio. Vierte la mezcla de huevo y patatas en la sartén y cocina a fuego medio-bajo. Cuando los bordes comiencen a cuajar, usa una espátula para despegar los bordes de la tortilla.",
+                "Cuando la tortilla esté casi cuajada por encima, coloca un plato grande sobre la sartén y dale la vuelta a la tortilla con cuidado. Luego deslízala de nuevo en la sartén para cocinar el otro lado.",
+                "Cocina por unos minutos más hasta que esté completamente cuajada pero jugosa por dentro. Retira del fuego y deja reposar unos minutos antes de servir."
+            ],
+            "dificultad": "Media"
+        },
+        {
+            "id": 2,
+            "nombre": "Ensalada César",
+            "ingredientes": [
+                "1 lechuga romana",
+                "100g de pechuga de pollo a la parrilla",
+                "50g de queso parmesano rallado",
+                "Crutones al gusto",
+                "Para el aderezo:",
+                "1 diente de ajo picado",
+                "2 filetes de anchoa (opcional)",
+                "1 cucharadita de mostaza Dijon",
+                "2 cucharadas de jugo de limón",
+                "1 cucharadita de salsa Worcestershire",
+                "1 taza de mayonesa",
+                "Sal y pimienta al gusto"
+            ],
+            "pasos": [
+                "Lava y corta la lechuga romana en trozos medianos. Reserva en un bol grande.",
+                "Corta la pechuga de pollo a la parrilla en tiras o cubos y añádela al bol con la lechuga.",
+                "Para preparar el aderezo, mezcla en un bol pequeño el ajo picado, las anchoas (si las usas), la mostaza Dijon, el jugo de limón, la salsa Worcestershire y la mayonesa. Mezcla bien hasta obtener una salsa homogénea. Sazona con sal y pimienta al gusto.",
+                "Vierte el aderezo sobre la ensalada y mezcla bien para que todos los ingredientes queden bien impregnados.",
+                "Añade el queso parmesano rallado y los crutones justo antes de servir para mantenerlos crujientes."
+            ],
+            "dificultad": "Fácil"
+        },
+        {
+            "id": 3,
+            "nombre": "Paella Valenciana",
+            "ingredientes": [
+                "400g de arroz bomba",
+                "800ml de caldo de pollo",
+                "200g de pollo troceado",
+                "200g de conejo troceado",
+                "100g de judías verdes planas",
+                "100g de garrofón (alubias blancas)",
+                "1 tomate maduro rallado",
+                "1 pimiento rojo cortado en tiras",
+                "2 dientes de ajo picados",
+                "Hebras de azafrán",
+                "Aceite de oliva",
+                "Sal al gusto"
+            ],
+            "pasos": [
+                "En una paellera grande, calienta un poco de aceite de oliva a fuego medio-alto. Añade el pollo y el conejo troceados y dóralos por todos lados. Retíralos y resérvalos.",
+                "En la misma paellera, añade las judías verdes y sofríelas hasta que estén tiernas. Luego añade el ajo picado y el tomate rallado, cocinando hasta que el tomate pierda su agua.",
+                "Vuelve a añadir el pollo y el conejo a la paellera. Agrega el arroz y remueve para que se impregne bien con los sabores.",
+                "Añade el caldo de pollo caliente junto con las hebras de azafrán. Sazona con sal al gusto. Cocina a fuego medio-alto durante unos 10 minutos.",
+                "Reduce el fuego a medio-bajo y cocina otros 10-15 minutos, o hasta que el arroz esté en su punto y haya absorbido todo el caldo. No remuevas el arroz durante esta fase para que se forme la socarrat (corteza dorada) en el fondo.",
+                "Retira del fuego y deja reposar la paella unos minutos antes de servir."
+            ],
+            "dificultad": "Difícil"
+        }
+    ]
+}

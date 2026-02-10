@@ -5,11 +5,10 @@ type RecetaFormProps = {
     anadirReceta: (nombre: string, ingredientes: string[], pasos: string[], dificultad: 'Facil' | 'Media' | 'Dificil') => void;
     editarReceta : (receta: Receta) => (void);
     cancelarEdicionReceta: () => (void);
-    peticionEnProgreso: boolean;
     recetaSeleccionada: Receta | null
 }
 
-function RecetaForm({ anadirReceta, peticionEnProgreso, recetaSeleccionada, editarReceta, cancelarEdicionReceta }: RecetaFormProps ) {
+function RecetaForm({ anadirReceta, recetaSeleccionada, editarReceta, cancelarEdicionReceta }: RecetaFormProps ) {
     const [nombre, setNombre] = useState(recetaSeleccionada?.nombre ?? "");
     const [ingredientes, setIngredientes] = useState(recetaSeleccionada?.ingredientes.join(", ") ?? "");
     const [pasos, setPasos] = useState(recetaSeleccionada?.pasos.join(". ") ?? "");
@@ -42,8 +41,8 @@ function RecetaForm({ anadirReceta, peticionEnProgreso, recetaSeleccionada, edit
             <option value="Dificil">Difícil</option>
         </select>
         <br />
-        <button type="submit" disabled={peticionEnProgreso}>{recetaSeleccionada ? "Editar" : "agregar"}</button>
-        {recetaSeleccionada && <button className="cancel" disabled={peticionEnProgreso} onClick={cancelarEdicionReceta}>Cancelar</button>}
+        <button type="submit">{recetaSeleccionada ? "Editar" : "agregar"}</button>
+        {recetaSeleccionada && <button className="cancel" onClick={cancelarEdicionReceta}>Cancelar</button>}
     </form>
     </>;
 }
