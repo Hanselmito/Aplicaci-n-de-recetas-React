@@ -1,84 +1,28 @@
 {
-    "users": [
-        {
-            "id": 1,
-            "username": "admin",
-            "email": "admin@example.com",
-            "password": "admin1234"
-        }
-    ],
-    "recetas": [
-        {
-            "id": 1,
-            "nombre": "Tortilla Española",
-            "ingredientes": ["6 huevos", "4 patatas medianas", "1 cebolla", "Aceite de oliva", "Sal"],
-            "pasos": [
-                "Pelar y cortar las patatas en rodajas finas",
-                "Freír las patatas en abundante aceite a fuego medio",
-                "Añadir la cebolla picada y cocinar hasta que esté transparente",
-                "Batir los huevos con sal en un bol grande",
-                "Escurrir las patatas y mezclar con los huevos",
-                "Cuajar la tortilla en una sartén dándole la vuelta"
-            ],
-            "dificultad": "Media"
-        },
-        {
-            "id": 2,
-            "nombre": "Gazpacho Andaluz",
-            "ingredientes": ["1 kg de tomates maduros", "1 pepino", "1 pimiento verde", "1 diente de ajo", "100 ml de aceite de oliva", "30 ml de vinagre", "Sal", "Pan del día anterior"],
-            "pasos": [
-                "Lavar y trocear todas las verduras",
-                "Triturar todos los ingredientes en la batidora",
-                "Añadir el aceite en hilo mientras se bate",
-                "Agregar vinagre y sal al gusto",
-                "Colar si se desea una textura más fina",
-                "Refrigerar al menos 2 horas antes de servir"
-            ],
-            "dificultad": "Facil"
-        },
-        {
-            "id": 3,
-            "nombre": "Paella Valenciana",
-            "ingredientes": ["400 g de arroz bomba", "1 pollo troceado", "200 g de judías verdes", "200 g de garrofón", "1 tomate rallado", "Azafrán", "Pimentón", "Aceite de oliva", "Sal", "Romero"],
-            "pasos": [
-                "Calentar aceite en la paella y dorar el pollo",
-                "Añadir las judías y el garrofón, sofreír",
-                "Incorporar el tomate y el pimentón",
-                "Añadir el agua caliente y dejar cocer 20 minutos",
-                "Agregar el arroz distribuyéndolo uniformemente",
-                "Añadir el azafrán y cocinar a fuego fuerte 10 minutos",
-                "Bajar el fuego y cocinar 8 minutos más",
-                "Dejar reposar 5 minutos antes de servir"
-            ],
-            "dificultad": "Dificil"
-        },
-        {
-            "id": 4,
-            "nombre": "Ensalada César",
-            "ingredientes": ["1 lechuga romana", "100 g de parmesano", "Pan para croutons", "Pechuga de pollo", "Salsa César", "Aceite de oliva"],
-            "pasos": [
-                "Lavar y cortar la lechuga en trozos",
-                "Cortar el pan en cubos y tostar con aceite",
-                "Cocinar la pechuga de pollo a la plancha y cortar en tiras",
-                "Mezclar la lechuga con la salsa César",
-                "Añadir el pollo, los croutons y el parmesano rallado"
-            ],
-            "dificultad": "Facil"
-        },
-        {
-            "id": 5,
-            "nombre": "Lasaña Boloñesa",
-            "ingredientes": ["12 láminas de lasaña", "500 g de carne picada", "400 g de tomate triturado", "1 cebolla", "2 dientes de ajo", "500 ml de bechamel", "Queso rallado", "Aceite de oliva", "Sal y pimienta"],
-            "pasos": [
-                "Sofreír la cebolla y el ajo picados",
-                "Añadir la carne picada y dorar",
-                "Incorporar el tomate y cocinar 20 minutos",
-                "Cocer las láminas de lasaña según instrucciones",
-                "Montar capas alternando pasta, boloñesa y bechamel",
-                "Terminar con bechamel y queso rallado",
-                "Hornear a 180°C durante 30 minutos"
-            ],
-            "dificultad": "Media"
-        }
-    ]
+  "users": [
+    {
+      "id": 2,
+      "username": "Juan",
+      "email": "juan@gmail.com",
+      "passwordHash": "$2b$10$XsYsZhE.ke.WFUPaFpOxNePgeoonW/1gR6BwJrtM0PlTwJvVv7Gxa"
+    }
+  ],
+  "recetas": [
+    {
+      "id": 1,
+      "nombre": "Tortilla Española",
+      "ingredientes": [
+        "6 huevos",
+        "4 patatas medianas",
+        "1 cebolla",
+        "aceite de oliva",
+        "sal"
+      ],
+      "pasos": [
+        "Pelar y cortar las patatas en rodajas finas, Freír las patatas en abundante aceite a fuego medio, Añadir la cebolla picada y cocinar hasta que esté transparente, Batir los huevos con sal en un bol grande, Escurrir las patatas y mezclar con los huevos, Cuajar la tortilla en una sartén dándole la vuelta"
+      ],
+      "dificultad": "Media",
+      "userId": 2
+    }
+  ]
 }
