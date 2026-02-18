@@ -11,7 +11,7 @@ export default function RecetaDetailPage() {
 
     useEffect(() => {
         if (id) {
-            recetaService.get(parseInt(id)).then((receta) => setRecetaSeleccionada(receta)).finally(() => setCargando(false));
+            recetaService.get(parseInt(id)).then((receta) => setRecetaSeleccionada(receta)).catch(() => {setRecetaSeleccionada(null)}).finally(() => setCargando(false));
         }
     }, [id]);
 
@@ -20,21 +20,22 @@ export default function RecetaDetailPage() {
     }
 
     if (recetaSeleccionada === null) {
-        return <p>receta no existente</p>
+        return <p>Receta no existente</p>
     }
 
-    return (<section className="">
-        <div className="">
-            <Link className="" to="/recetas">Volver a la lista de recetas</Link>
-            {!cargando && recetaSeleccionada && <span className="">Dificultad: {recetaSeleccionada.dificultad}</span>}
+    return (<section className="detail card">
+        <div className="detail-header">
+            <Link className="detail-back" to="/recetas">Volver a la lista de recetas</Link>
+            {!cargando && recetaSeleccionada && <span className="detail-dificultad">Dificultad: {recetaSeleccionada.dificultad}</span>}
         </div>
         {!cargando && recetaSeleccionada && <>
-            <h1 className="">{recetaSeleccionada.nombre}</h1>
+            <h1 className="detail-nombre">{recetaSeleccionada.nombre}</h1>
             <p className="muted"> ID: {recetaSeleccionada.id}</p>
         </>
         }
         {cargando && <p>Cargando...</p>}
-        <div className="">
+        {!cargando && recetaSeleccionada === null && <p>Receta no encontrada</p>}
+        <div className="detail-footer">
             <Link className="btn" to="/recetas">Volver a la lista de recetas</Link>
         </div>
     </section>)
