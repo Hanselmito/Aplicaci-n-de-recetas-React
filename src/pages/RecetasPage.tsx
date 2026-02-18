@@ -6,6 +6,7 @@ import RecetaForm from "../components/RecetaForm";
 
 
 export default function RecetasPage() {
+    const [error, setError] = useState<string | null>(null);
     const [recetas, setRecetas] = useState<Receta[]>([]);
     const [cargando, setCargando] = useState<boolean>(true);
     const [recetaSeleccionada, setRecetaSleccionada] = useState<Receta | null>(null);
@@ -38,6 +39,7 @@ export default function RecetasPage() {
         recetaService
         .getAll()
         .then((listaRecetas) => setRecetas(listaRecetas))
+        .catch((respuestaErronea) => { setError(respuestaErronea.message + ": " + respuestaErronea.response.data.message)})
         .finally(() => setCargando(false));
     }, []);
 
@@ -49,6 +51,7 @@ export default function RecetasPage() {
                 consejo: haz click en el nombre de la receta para ver los detalles
             </p>
 
+            {!error && <>
             <RecetaList
             recetas={recetas}
             cargando={cargando}
@@ -58,11 +61,14 @@ export default function RecetasPage() {
             />
 
             <RecetaForm
+            key = {recetaSeleccionada?.id ?? null}
             anadirReceta={anadirReceta}
             recetaSeleccionada={recetaSeleccionada}
             editarReceta={editarReceta}
             cancelarEdicionReceta={cancelarEdicionReceta}
             />
+            </>}
+            {error && <div className="toast error">{error}</div>}
         </section>
     );
 }
