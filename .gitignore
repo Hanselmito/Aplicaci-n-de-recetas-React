@@ -23,5 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
+.env
 recetas.json
 backend/db.json

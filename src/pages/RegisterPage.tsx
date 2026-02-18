@@ -16,7 +16,7 @@ export default function RegisterPage() {
     const [mensaje, setMensaje] = useState<{texto: string, tipo: string} | null>(null);
 
     if (isAuthenticated) {
-      return <Navigate to="/tasks" replace />
+      return <Navigate to="/recetas" replace />
     }
 
 

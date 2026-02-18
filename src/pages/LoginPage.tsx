@@ -13,7 +13,7 @@ export default function LoginPage() {
     const navigate = useNavigate();
 
     if (isAuthenticated) {
-        return <Navigate to="/tasks" replace />;
+        return <Navigate to="/recetas" replace />;
     }
 
     async function handleSubmit(e: React.FormEvent) {
@@ -24,7 +24,7 @@ export default function LoginPage() {
         try {
             const session = await AuthService.login(email.trim(), password);
             login(session);
-            navigate("/tasks", {replace: true });
+            navigate("/recetas", {replace: true });
         } catch {
             setError("Invalid email or password");
         } finally {
@@ -47,7 +47,7 @@ export default function LoginPage() {
           />
 
           <input
-            type="text"
+            type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
