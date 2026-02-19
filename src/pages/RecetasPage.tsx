@@ -48,7 +48,7 @@ export default function RecetasPage() {
             <h1>Lista de Recetas</h1>
 
             <p className="muted">
-                consejo: haz click en el nombre de la receta para ver los detalles
+                consejo: haz click en el nombre para ver los detalles de la receta.
             </p>
 
             {!error && <>

@@ -9,7 +9,7 @@ type RecetaListProps = {
     setRecetaSeleccionada: (receta :Receta) => void;
 };
 
-function RecetaList({ recetas, cargando, setRecetaSeleccionada, borrarReceta, editarReceta }: RecetaListProps) {
+function RecetaList({ recetas, cargando, setRecetaSeleccionada, borrarReceta }: RecetaListProps) {
     const navigate = useNavigate();
     function verReceta(receta: Receta): void {
         navigate(`/recetas/${receta.id}`);
@@ -24,9 +24,6 @@ function RecetaList({ recetas, cargando, setRecetaSeleccionada, borrarReceta, ed
                 recetas.map((receta) => (
                 <li key={receta.id} className={receta.nombre ? "" :""}>
                     <span className="nombreReceta" onClick={() => {verReceta(receta)}}>{receta.nombre}</span>{" "}
-                    <button
-                    className="complete"
-                    onClick={() => editarReceta({...receta})}>V</button>
                     <button
                     className="edit"
                     onClick={() => setRecetaSeleccionada(receta)}

@@ -25,12 +25,14 @@ export default function RecetaDetailPage() {
 
     return (<section className="detail card">
         <div className="detail-header">
-            <Link className="detail-back" to="/recetas">Volver a la lista de recetas</Link>
+            <Link className="detail-back" to="/recetas">Volver a la lista de recetas </Link>
             {!cargando && recetaSeleccionada && <span className="detail-dificultad">Dificultad: {recetaSeleccionada.dificultad}</span>}
         </div>
         {!cargando && recetaSeleccionada && <>
             <h1 className="detail-nombre">{recetaSeleccionada.nombre}</h1>
             <p className="muted"> ID: {recetaSeleccionada.id}</p>
+            <p className="muted">Ingrediente: {recetaSeleccionada.ingredientes.join(", ")}</p>
+            <p className="muted">Pasos: {recetaSeleccionada.pasos.join(". ")}</p>
         </>
         }
         {cargando && <p>Cargando...</p>}

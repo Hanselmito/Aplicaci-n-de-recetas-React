@@ -18,10 +18,17 @@ function RecetaForm({ anadirReceta, recetaSeleccionada, editarReceta, cancelarEd
         e.preventDefault();
         if(nombre.trim().length > 0 && ingredientes.length > 0 && pasos.length > 0 && dificultad) {
             if (recetaSeleccionada != null) {
-                const nuevaReceta : Receta = {...recetaSeleccionada, nombre: nombre, ingredientes: ingredientes.split(',').map(ing => ing.trim()), pasos: pasos.split('.').map(p => p.trim()), dificultad: dificultad};
+                const nuevaReceta : Receta = {...recetaSeleccionada, nombre: nombre,
+                     ingredientes: ingredientes.split(',').map(ing => ing.trim()),
+                      pasos: pasos.split('.').map(p => p.trim()),
+                       dificultad: dificultad};
+
                 editarReceta(nuevaReceta)
             }else {
-                anadirReceta(nombre.trim(), ingredientes.split(',').map(ing => ing.trim()), pasos.split('.').map(p => p.trim()), dificultad)
+                anadirReceta(nombre.trim(),
+                 ingredientes.split(',').map(ing => ing.trim()),
+                  pasos.split('.').map(p => p.trim()),
+                   dificultad);
             }
         }
     }
