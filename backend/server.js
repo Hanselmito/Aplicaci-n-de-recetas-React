@@ -3,13 +3,55 @@ import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import jsonServer from 'json-server';
+import multer from 'multer';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const PORT = process.env.PORT ?? 3000;
 const JWT_SECRET = process.env.JWT_SECRET ?? "dev-secret";
 
+// Configurar multer para guardar imágenes
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, uploadDir);
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ 
+    storage: storage,
+    fileFilter: (req, file, cb) => {
+        const allowedTypes = /jpeg|jpg|png|gif|webp/;
+        const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+        const mimetype = allowedTypes.test(file.mimetype);
+        
+        if (mimetype && extname) {
+            return cb(null, true);
+        } else {
+            cb(new Error('Solo se permiten imágenes (jpeg, jpg, png, gif, webp)'));
+        }
+    },
+    limits: { fileSize: 5 * 1024 * 1024 } // 5MB max
+});
+
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Servir archivos estáticos desde uploads
+app.use('/uploads', express.static(uploadDir));
 
 //reutilizacion de un solo router/db (evita crear router("db.json") cada vez)
 const router = jsonServer.router('db.json');
@@ -133,7 +175,7 @@ app.get('/recetas/:id', authRequired, (req, res) => {
     return res.json(receta);
 });
 
-app.post('/recetas', authRequired, (req, res) => {
+app.post('/recetas', authRequired, upload.single('imagen'), (req, res) => {
     const userId = userIdFromReq(req);
     const { nombre, ingredientes, pasos, dificultad = "Facil" } = req.body ?? {};
 
@@ -142,12 +184,16 @@ app.post('/recetas', authRequired, (req, res) => {
     const recetas = db.get("recetas");
     const nextId = (recetas.maxBy("id").value()?.id ?? 0) + 1;
 
+    // Si hay archivo, guardar la ruta relativa
+    const imagenPath = req.file ? `/uploads/${req.file.filename}` : null;
+
     const newReceta = {
         id: nextId,
         nombre: nombre.trim(),
-        ingredientes: ingredientes ?? [],
-        pasos: pasos ?? [],
+        ingredientes: typeof ingredientes === 'string' ? JSON.parse(ingredientes) : (ingredientes ?? []),
+        pasos: typeof pasos === 'string' ? JSON.parse(pasos) : (pasos ?? []),
         dificultad,
+        imagen: imagenPath,
         userId: userId
     };
 
@@ -155,7 +201,7 @@ app.post('/recetas', authRequired, (req, res) => {
     return res.status(201).json(newReceta);
 });
 
-app.put('/recetas/:id', authRequired, (req, res) => {
+app.put('/recetas/:id', authRequired, upload.single('imagen'), (req, res) => {
     const userId = userIdFromReq(req);
     const id = Number(req.params.id);
 
@@ -167,12 +213,29 @@ app.put('/recetas/:id', authRequired, (req, res) => {
     const { nombre, ingredientes, pasos, dificultad } = req.body ?? {};
     if (!nombre?.trim()) return res.status(400).json({ message: "nombre es obligatorio" });
 
+    let imagenPath = receta.imagen;
+    
+    // Si hay nuevo archivo, actualizar la imagen
+    if (req.file) {
+        // Eliminar imagen anterior si existe
+        if (receta.imagen && receta.imagen.startsWith('/uploads/')) {
+            const oldImagePath = path.join(__dirname, receta.imagen);
+            if (fs.existsSync(oldImagePath)) {
+                fs.unlinkSync(oldImagePath);
+            }
+        }
+        imagenPath = `/uploads/${req.file.filename}`;
+    } else if (req.body?.imagen !== undefined) {
+        imagenPath = req.body.imagen;
+    }
+
     const updated = {
         ...receta,
         nombre: nombre.trim(),
-        ingredientes: ingredientes ?? receta.ingredientes,
-        pasos: pasos ?? receta.pasos,
+        ingredientes: typeof ingredientes === 'string' ? JSON.parse(ingredientes) : (ingredientes ?? receta.ingredientes),
+        pasos: typeof pasos === 'string' ? JSON.parse(pasos) : (pasos ?? receta.pasos),
         dificultad: dificultad ?? receta.dificultad,
+        imagen: imagenPath,
         userId: userId
     };
     db.get("recetas").find({ id }).assign(updated).write();
@@ -180,7 +243,7 @@ app.put('/recetas/:id', authRequired, (req, res) => {
     return res.json(updated);
 });
 
-app.patch('/recetas/:id', authRequired, (req, res) => {
+app.patch('/recetas/:id', authRequired, upload.single('imagen'), (req, res) => {
     const userId = userIdFromReq(req);
     const id = Number(req.params.id);
 
@@ -195,10 +258,32 @@ app.patch('/recetas/:id', authRequired, (req, res) => {
         if (!n) return res.status(400).json({ message: "nombre no puede estar vacío" });
         patch.nombre = n;
     }
-    if (req.body?.ingredientes !== undefined) patch.ingredientes = req.body.ingredientes;
-    if (req.body?.pasos !== undefined) patch.pasos = req.body.pasos;
+    if (req.body?.ingredientes !== undefined) {
+        patch.ingredientes = typeof req.body.ingredientes === 'string' 
+            ? JSON.parse(req.body.ingredientes) 
+            : req.body.ingredientes;
+    }
+    if (req.body?.pasos !== undefined) {
+        patch.pasos = typeof req.body.pasos === 'string' 
+            ? JSON.parse(req.body.pasos) 
+            : req.body.pasos;
+    }
     if (req.body?.dificultad !== undefined) patch.dificultad = req.body.dificultad;
-
+    
+    // Si hay nuevo archivo, actualizar la imagen
+    if (req.file) {
+        // Eliminar imagen anterior si existe
+        if (receta.imagen && receta.imagen.startsWith('/uploads/')) {
+            const oldImagePath = path.join(__dirname, receta.imagen);
+            if (fs.existsSync(oldImagePath)) {
+                fs.unlinkSync(oldImagePath);
+            }
+        }
+        patch.imagen = `/uploads/${req.file.filename}`;
+    } else if (req.body?.imagen !== undefined) {
+        patch.imagen = req.body.imagen;
+    }
+    
     const updated = db.get("recetas").find({ id }).assign(patch).write();
     return res.json(updated);
 });
@@ -210,6 +295,14 @@ app.delete('/recetas/:id', authRequired, (req, res) => {
     const receta = db.get("recetas").find({ id }).value();
     if (!recetaBelongsToUser(receta, userId)) {
         return res.status(404).json({ message: "Receta not found" });
+    }
+
+    // Eliminar imagen si existe
+    if (receta.imagen && receta.imagen.startsWith('/uploads/')) {
+        const imagePath = path.join(__dirname, receta.imagen);
+        if (fs.existsSync(imagePath)) {
+            fs.unlinkSync(imagePath);
+        }
     }
 
     db.get("recetas").remove({ id }).write();
