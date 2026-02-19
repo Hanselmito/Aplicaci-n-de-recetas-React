@@ -37,11 +37,41 @@ export const recetaService = {
         return axiosInstance.delete<void>(API_URL + "/" + id).then(() => {})
     },
 
-    create(receta: string, ingredientes: string[], pasos: string[], dificultad: string) : Promise<Receta> {
-        return axiosInstance.post<Receta>(API_URL, {nombre: receta, ingredientes: ingredientes, pasos: pasos, dificultad: dificultad } ).then(response => response.data);
+    create(nombre: string, ingredientes: string[], pasos: string[], dificultad: string, imagenFile?: File) : Promise<Receta> {
+        const formData = new FormData();
+        formData.append('nombre', nombre);
+        formData.append('ingredientes', JSON.stringify(ingredientes));
+        formData.append('pasos', JSON.stringify(pasos));
+        formData.append('dificultad', dificultad);
+        
+        if (imagenFile) {
+            formData.append('imagen', imagenFile);
+        }
+        
+        return axiosInstance.post<Receta>(API_URL, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        }).then(response => response.data);
     },
 
-    update(receta : Receta): Promise<Receta> {
-        return axiosInstance.patch<Receta>((API_URL + "/" + receta.id),receta).then(response => response.data)
+    update(receta : Receta, imagenFile?: File): Promise<Receta> {
+        const formData = new FormData();
+        formData.append('nombre', receta.nombre);
+        formData.append('ingredientes', JSON.stringify(receta.ingredientes));
+        formData.append('pasos', JSON.stringify(receta.pasos));
+        formData.append('dificultad', receta.dificultad);
+        
+        if (imagenFile) {
+            formData.append('imagen', imagenFile);
+        } else if (receta.imagen) {
+            formData.append('imagen', receta.imagen);
+        }
+        
+        return axiosInstance.patch<Receta>((API_URL + "/" + receta.id), formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        }).then(response => response.data);
     }
 }

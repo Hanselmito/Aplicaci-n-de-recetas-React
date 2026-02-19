@@ -11,8 +11,7 @@ export default function AppLayout() {
                     <span className="brand"> React Recetas</span>
                     <nav className="navlinks">
                         { isAuthenticated && user && <NavLink to="/recetas">Recetas</NavLink>}
-                        <NavLink to="/about">About</NavLink>
-                        { isAuthenticated && user && <NavLink to="/perfil">Perfil</NavLink>}
+                        { isAuthenticated && user && <NavLink to="/crear">Crear Receta</NavLink>}
                         { !isAuthenticated && <NavLink to="/login">Login</NavLink>}
                         { !isAuthenticated && <NavLink to="/register">Register</NavLink>}
                         { isAuthenticated && user && <>

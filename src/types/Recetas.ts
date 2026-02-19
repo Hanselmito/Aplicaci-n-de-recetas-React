@@ -3,5 +3,6 @@ export type Receta = {
     nombre: string,
     ingredientes: string[],
     pasos: string[],
-    dificultad: 'Facil' | 'Media' | 'Dificil'
+    dificultad: 'Facil' | 'Media' | 'Dificil',
+    imagen?: string
 }

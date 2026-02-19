@@ -1,37 +1,19 @@
 import { recetaService } from "../services/recetaService";
 import type { Receta } from "../types/Recetas";
 import { useEffect, useState } from "react";
-import RecetaList from "../components/RecetaList";
-import RecetaForm from "../components/RecetaForm";
+import RecetaCard from "../components/RecetaCard";
 
 
 export default function RecetasPage() {
     const [error, setError] = useState<string | null>(null);
     const [recetas, setRecetas] = useState<Receta[]>([]);
     const [cargando, setCargando] = useState<boolean>(true);
-    const [recetaSeleccionada, setRecetaSleccionada] = useState<Receta | null>(null);
+
 
 
     function borrarReceta(recetaObjetivo : Receta): void {
         recetaService.delete(recetaObjetivo.id).then(() => {
             setRecetas((prev) => prev.filter((r) => r.id !== recetaObjetivo.id));
-        });
-    }
-
-    function cancelarEdicionReceta(): void {
-        setRecetaSleccionada(null);
-    }
-
-    function editarReceta(recetaObjetivo : Receta): void {
-        recetaService.update(recetaObjetivo).then(() => {
-            setRecetas((prev) => prev.map((r) => r.id == recetaObjetivo.id ? recetaObjetivo : r));
-            cancelarEdicionReceta();
-        });
-    }
-
-    function anadirReceta(nombre : string, ingredientes: string[], pasos: string[], dificultad: 'Facil' | 'Media' | 'Dificil'): void {
-        recetaService.create(nombre, ingredientes, pasos, dificultad).then((nuevaReceta) => {
-            setRecetas((prev) => [...prev, nuevaReceta]);
         });
     }
 
@@ -44,30 +26,28 @@ export default function RecetasPage() {
     }, []);
 
     return (
-        <section className="card">
-            <h1>Lista de Recetas</h1>
-
-            <p className="muted">
-                consejo: haz click en el nombre para ver los detalles de la receta.
-            </p>
-
-            {!error && <>
-            <RecetaList
-            recetas={recetas}
-            cargando={cargando}
-            borrarReceta={borrarReceta}
-            editarReceta={editarReceta}
-            setRecetaSeleccionada={setRecetaSleccionada}
-            />
-
-            <RecetaForm
-            key = {recetaSeleccionada?.id ?? null}
-            anadirReceta={anadirReceta}
-            recetaSeleccionada={recetaSeleccionada}
-            editarReceta={editarReceta}
-            cancelarEdicionReceta={cancelarEdicionReceta}
-            />
-            </>}
+        <section>
+            <h1>Mis Recetas</h1>
+            {!error && (
+                <>
+                    {cargando && <p>Cargando recetas...</p>}
+                    {!cargando && (
+                        <div className="recetas-grid">
+                            {recetas.length === 0 ? (
+                                <p>No hay recetas. ¡Crea tu primera receta!</p>
+                            ) : (
+                                recetas.map((receta) => (
+                                    <RecetaCard
+                                        key={receta.id}
+                                        receta={receta}
+                                        borrarReceta={borrarReceta}
+                                    />
+                                ))
+                            )}
+                        </div>
+                    )}
+                </>
+            )}
             {error && <div className="toast error">{error}</div>}
         </section>
     );
