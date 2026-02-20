@@ -9,14 +9,6 @@ export default function RecetasPage() {
     const [recetas, setRecetas] = useState<Receta[]>([]);
     const [cargando, setCargando] = useState<boolean>(true);
 
-
-
-    function borrarReceta(recetaObjetivo : Receta): void {
-        recetaService.delete(recetaObjetivo.id).then(() => {
-            setRecetas((prev) => prev.filter((r) => r.id !== recetaObjetivo.id));
-        });
-    }
-
     useEffect(() => {
         recetaService
         .getAll()
@@ -40,7 +32,6 @@ export default function RecetasPage() {
                                     <RecetaCard
                                         key={receta.id}
                                         receta={receta}
-                                        borrarReceta={borrarReceta}
                                     />
                                 ))
                             )}
