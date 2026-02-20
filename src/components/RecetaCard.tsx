@@ -3,10 +3,9 @@ import type { Receta } from "../types/Recetas";
 
 type RecetaCardProps = {
     receta: Receta;
-    borrarReceta: (receta: Receta) => void;
 };
 
-function RecetaCard({ receta, borrarReceta }: RecetaCardProps) {
+function RecetaCard({ receta }: RecetaCardProps) {
     const navigate = useNavigate();
 
     function verReceta(): void {
@@ -33,14 +32,6 @@ function RecetaCard({ receta, borrarReceta }: RecetaCardProps) {
             <div className="receta-card-content">
                 <h3 onClick={verReceta} className="receta-card-titulo">{receta.nombre}</h3>
                 <p className="receta-card-dificultad">Dificultad: {receta.dificultad}</p>
-                <div className="receta-card-actions">
-                    <button
-                        className="delete"
-                        onClick={() => borrarReceta(receta)}
-                    >
-                        Eliminar
-                    </button>
-                </div>
             </div>
         </div>
     );

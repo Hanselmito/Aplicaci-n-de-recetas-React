@@ -64,6 +64,9 @@ export default function RecetaDetailPage() {
         
         {!cargando && recetaSeleccionada && !modoEdicion && <>
             <div className="detail-header">
+                <div className="detail-actions">
+                    <Link className="btn" to="/recetas">Volver a la lista de recetas</Link>
+                </div>
                 <span className="detail-dificultad">Dificultad: {recetaSeleccionada.dificultad}</span>
                 <div className="detail-actions">
                     <button className="edit" onClick={() => setModoEdicion(true)}>Editar</button>
@@ -95,10 +98,6 @@ export default function RecetaDetailPage() {
                         <li key={idx}>{paso}</li>
                     ))}
                 </ol>
-            </div>
-            
-            <div className="detail-footer">
-                <Link className="btn" to="/recetas">Volver a la lista de recetas</Link>
             </div>
         </>}
         
