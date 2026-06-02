@@ -1,5 +1,5 @@
 import './App.css'
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import AppLayout from './layout/AppLayout'
 import RecetasPage from './pages/RecetasPage'
 import CrearPage from './pages/RecetaCrearPage'
@@ -7,13 +7,13 @@ import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import RecetaDetailPage from './pages/RecetaDetailPage'
 import ProtectedRoute from './routing/ProtectedRoute'
+import HomePage from './pages/HomePage'
 
 function App() {
-
   return (
     <Routes>
       <Route element={<AppLayout />}>
-        <Route index element={<Navigate to="/recetas" replace />} />
+        <Route index element={<HomePage />} />
         <Route path='recetas' element={<ProtectedRoute><RecetasPage /></ProtectedRoute>} />
         <Route path='crear' element={<ProtectedRoute><CrearPage /></ProtectedRoute>} />
         <Route path='login' element={<LoginPage />} />
