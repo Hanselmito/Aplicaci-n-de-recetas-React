@@ -3,6 +3,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { recetaService } from "../services/recetaService";
 import type { Receta } from "../types/Recetas";
 import RecetaForm from "../components/RecetaForm";
+import { getApiErrorMessage } from "../services/http";
 
 export default function RecetaDetailPage() {
     const { id } = useParams<{ id: string }>();
@@ -10,13 +11,20 @@ export default function RecetaDetailPage() {
     const [cargando, setCargando] = useState<boolean>(true);
     const [recetaSeleccionada, setRecetaSeleccionada] = useState<Receta | undefined | null>(undefined);
     const [modoEdicion, setModoEdicion] = useState<boolean>(false);
+    const [guardando, setGuardando] = useState<boolean>(false);
+    const [eliminando, setEliminando] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
 
     function cargarReceta() {
         if (id) {
             setCargando(true);
+            setError(null);
             recetaService.get(parseInt(id))
                 .then((receta) => setRecetaSeleccionada(receta))
-                .catch(() => {setRecetaSeleccionada(null)})
+                .catch((error) => {
+                    setRecetaSeleccionada(null)
+                    setError(getApiErrorMessage(error, "No se pudo cargar la receta."))
+                })
                 .finally(() => setCargando(false));
         }
     }
@@ -28,31 +36,43 @@ export default function RecetaDetailPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
 
-    function editarReceta(receta: Receta, imagenFile?: File): void {
-        recetaService.update(receta, imagenFile).then((recetaActualizada) => {
+    async function editarReceta(receta: Receta, imagenFile?: File): Promise<void> {
+        setError(null);
+        setGuardando(true);
+
+        try {
+            const recetaActualizada = await recetaService.update(receta, imagenFile);
             setRecetaSeleccionada(recetaActualizada);
             setModoEdicion(false);
-        });
+        } catch (error) {
+            setError(getApiErrorMessage(error, "No se pudo guardar la receta."));
+        } finally {
+            setGuardando(false);
+        }
     }
 
     function cancelarEdicion(): void {
         setModoEdicion(false);
     }
 
-    function eliminarReceta(): void {
+    async function eliminarReceta(): Promise<void> {
         if (recetaSeleccionada && window.confirm(`¿Estás seguro de eliminar "${recetaSeleccionada.nombre}"?`)) {
-            recetaService.delete(recetaSeleccionada.id).then(() => {
+            setError(null);
+            setEliminando(true);
+
+            try {
+                await recetaService.delete(recetaSeleccionada.id);
                 navigate('/recetas');
-            });
+            } catch (error) {
+                setError(getApiErrorMessage(error, "No se pudo eliminar la receta."));
+            } finally {
+                setEliminando(false);
+            }
         }
     }
 
     if (!id) {
         return <p className="card">No se encontró el ID de la receta.</p>
-    }
-
-    if (recetaSeleccionada === null) {
-        return <p className="card">Receta no existente</p>
     }
 
     const imagenUrl = recetaSeleccionada?.imagen 
@@ -61,6 +81,7 @@ export default function RecetaDetailPage() {
 
     return (<section className="detail card">
         {cargando && <p>Cargando...</p>}
+        {error && <div className="toast error">{error}</div>}
         
         {!cargando && recetaSeleccionada && !modoEdicion && <>
             <div className="detail-header">
@@ -69,8 +90,8 @@ export default function RecetaDetailPage() {
                 </div>
                 <span className="detail-dificultad">Dificultad: {recetaSeleccionada.dificultad}</span>
                 <div className="detail-actions">
-                    <button className="edit" onClick={() => setModoEdicion(true)}>Editar</button>
-                    <button className="delete" onClick={eliminarReceta}>Eliminar</button>
+                    <button className="edit" onClick={() => setModoEdicion(true)} disabled={eliminando}>Editar</button>
+                    <button className="delete" onClick={eliminarReceta} disabled={eliminando}>{eliminando ? "Eliminando..." : "Eliminar"}</button>
                 </div>
             </div>
             
@@ -103,13 +124,15 @@ export default function RecetaDetailPage() {
         
         {!cargando && recetaSeleccionada && modoEdicion && <>
             <RecetaForm
-                anadirReceta={() => {}}
+                anadirReceta={async () => {}}
                 recetaSeleccionada={recetaSeleccionada}
                 editarReceta={editarReceta}
                 cancelarEdicionReceta={cancelarEdicion}
+                guardando={guardando}
+                error={error}
             />
         </>}
         
-        {!cargando && recetaSeleccionada === null && <p>Receta no encontrada</p>}
+        {!cargando && !error && recetaSeleccionada === null && <p>Receta no encontrada</p>}
     </section>)
 }
