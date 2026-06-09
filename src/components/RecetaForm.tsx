@@ -18,6 +18,7 @@ function RecetaForm({ anadirReceta, recetaSeleccionada, editarReceta, cancelarEd
     const [imagenFile, setImagenFile] = useState<File | null>(null);
     const [imagenPreview, setImagenPreview] = useState<string | null>(recetaSeleccionada?.imagen ?? null);
     const [imagenError, setImagenError] = useState<string | null>(null);
+    const [validationError, setValidationError] = useState<string | null>(null);
 
     function handleImagenChange(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
@@ -25,6 +26,11 @@ function RecetaForm({ anadirReceta, recetaSeleccionada, editarReceta, cancelarEd
             if (!file.type.startsWith("image/")) {
                 setImagenFile(null);
                 setImagenError("La imagen no es válida. Selecciona un archivo de imagen.");
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) { // 5MB
+                setImagenFile(null);
+                setImagenError("La imagen es demasiado grande. El tamaño máximo es 5MB.");
                 return;
             }
 
@@ -40,37 +46,55 @@ function RecetaForm({ anadirReceta, recetaSeleccionada, editarReceta, cancelarEd
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
+        setValidationError(null);
+
         if (guardando || imagenError) {
             return;
         }
 
-        if(nombre.trim().length > 0 && ingredientes.length > 0 && pasos.length > 0 && dificultad) {
-            if (recetaSeleccionada != null) {
-                const nuevaReceta : Receta = {...recetaSeleccionada, nombre: nombre,
-                     ingredientes: ingredientes.split(',').map(ing => ing.trim()),
-                      pasos: pasos.split('.').map(p => p.trim()),
-                       dificultad: dificultad};
+        const nombreTrimmed = nombre.trim();
+        if (nombreTrimmed.length < 3) {
+            setValidationError("El nombre de la receta debe tener al menos 3 caracteres.");
+            return;
+        }
 
-                await editarReceta(nuevaReceta, imagenFile ?? undefined)
-            }else {
-                await anadirReceta(nombre.trim(),
-                 ingredientes.split(',').map(ing => ing.trim()),
-                  pasos.split('.').map(p => p.trim()),
-                   dificultad,
-                   imagenFile ?? undefined);
-            }
+        const ingredientesList = ingredientes.split(',').map(ing => ing.trim()).filter(ing => ing.length > 0);
+        if (ingredientesList.length === 0) {
+            setValidationError("Debes añadir al menos un ingrediente.");
+            return;
+        }
+
+        const pasosList = pasos.split('.').map(p => p.trim()).filter(p => p.length > 0);
+        if (pasosList.length === 0) {
+            setValidationError("Debes añadir al menos un paso.");
+            return;
+        }
+
+        if (recetaSeleccionada != null) {
+            const nuevaReceta : Receta = {...recetaSeleccionada, nombre: nombreTrimmed,
+                    ingredientes: ingredientesList,
+                    pasos: pasosList,
+                    dificultad: dificultad};
+
+            await editarReceta(nuevaReceta, imagenFile ?? undefined)
+        } else {
+            await anadirReceta(nombreTrimmed,
+                ingredientesList,
+                pasosList,
+                dificultad,
+                imagenFile ?? undefined);
         }
     }
 
     return <>
     <h2>{recetaSeleccionada ? `Editar receta: ${recetaSeleccionada.nombre}` : "agregar nueva receta"}</h2>
     <form onSubmit={handleSubmit}>
-        <input type="text" placeholder="Nombre de la receta" value={nombre} onChange={e => setNombre(e.target.value)} required disabled={guardando} />
+        <input type="text" placeholder="Nombre de la receta (mín. 3 caracteres)" value={nombre} onChange={e => setNombre(e.target.value)} required disabled={guardando} />
         <br />
         
         <div className="imagen-upload-container">
             <label className="imagen-upload-label">
-                <span>Seleccionar imagen (opcional)</span>
+                <span>Seleccionar imagen (opcional, máx. 5MB)</span>
                 <input 
                     type="file" 
                     accept="image/*" 
@@ -100,7 +124,8 @@ function RecetaForm({ anadirReceta, recetaSeleccionada, editarReceta, cancelarEd
         <br />
         <button type="submit" disabled={guardando}>{guardando ? "Guardando..." : recetaSeleccionada ? "Editar" : "Agregar"}</button>
         {recetaSeleccionada && <button type="button" className="cancel" onClick={cancelarEdicionReceta} disabled={guardando}>Cancelar</button>}
-        {error && <div className="toast error">{error}</div>}
+        {validationError && <div className="toast error">{validationError}</div>}
+        {error && !validationError && <div className="toast error">{error}</div>}
     </form>
     </>;
 }
