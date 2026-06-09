@@ -3,6 +3,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { recetaService } from "../services/recetaService";
 import type { Receta } from "../types/Recetas";
 import RecetaForm from "../components/RecetaForm";
+import IngredientesList from "../components/IngredientesList";
 import { getApiErrorMessage } from "../services/http";
 
 export default function RecetaDetailPage() {
@@ -105,11 +106,7 @@ export default function RecetaDetailPage() {
             
             <div className="detail-section">
                 <h3>Ingredientes:</h3>
-                <ul className="detail-list">
-                    {recetaSeleccionada.ingredientes.map((ing, idx) => (
-                        <li key={idx}>{ing}</li>
-                    ))}
-                </ul>
+                <IngredientesList ingredientes={recetaSeleccionada.ingredientes} />
             </div>
             
             <div className="detail-section">
